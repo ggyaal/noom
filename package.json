@@ -1,0 +1,22 @@
+{
+  "name": "zoom",
+  "version": "1.0.0",
+  "description": "Zoom Cloning Practice",
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "author": "ggyaal",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.21.5",
+    "@babel/core": "^7.22.1",
+    "@babel/node": "^7.22.1",
+    "@babel/preset-env": "^7.22.4",
+    "nodemon": "^2.0.22"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "pug": "^3.0.2",
+    "ws": "^8.13.0"
+  }
+}
