@@ -1,0 +1,264 @@
+button {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	cursor: pointer;
+	margin: 0;
+	padding: 0.5rem 1rem;
+	font-family: "Noto Sans KR", sans-serif;
+	font-size: 1rem;
+	font-weight: 400;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	width: auto;
+	border: none;
+	border-radius: 4px;
+}
+
+ul {
+	overflow-y: auto;
+}
+
+#wrapper {
+	background-color: #71C1B1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+header h1 {
+	background-color: #21B1A1;
+	border: 1px solid #449AFA;
+	width: 300px;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-size: 45px;
+	padding: 10px;
+}
+
+#welcome {
+	color: #4d656e;
+	display: flex;
+	font-size: 25px;
+	justify-content: center;
+	padding: 10px 0;
+	border: 2px solid;
+	border-radius: 5px;
+	margin: 10px 0;
+	min-width: 250px;
+}
+
+#nick h5 {
+	color: white;
+	margin-top: 30px;
+}
+
+#nick input {
+	border-radius: 5px;
+	border: 2px solid green;
+	padding: 5px;
+	margin: 5px 0;
+}
+
+#nick button {
+	background-color: #21B1A1;
+}
+
+#chat-main {
+	display: flex;
+}
+
+#roomList {
+	background-color: #62D7C3;
+	border-radius: 10px;
+	margin: 10px 0;
+	padding: 15px 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	margin: 0 5px;
+}
+
+#roomList div {
+	font-size: 20px;
+	color: #DFFDDF;
+	margin-bottom: 15px;
+}
+
+#roomList .linking {
+	cursor: pointer;
+	color: #1AA2A4;
+}
+
+#roomList .linking:hover {
+	color: #1AC2C4;
+	transform: scale(1.1);
+}
+
+#roomList ul {
+	height: 200px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#roomList li {
+	margin: 3px 0;
+}
+
+#createRoom input {
+	height: 80%;
+	border-radius: 10px;
+	border: 3px solid #1e826d;
+}
+
+#createRoom button {
+	background-color: #2e7a6d;
+	color: white;
+	font-weight: 600;
+}
+
+#createRoom button:hover {
+	background-color: #143b34;
+}
+
+#nickChange {
+	margin-top: 20px;
+	background-color: #406a63;
+	padding: 20px;
+	border-radius: 5px;
+	color: white;
+}
+
+#nickChange h5 {
+	margin: 5px 0;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+#nickChange div {
+	display: flex;
+}
+
+#nickChange input {
+	padding: 0 10px;
+	border: none;
+	border-radius: 10px 0px 0px 10px;
+}
+
+#nickChange button {
+	border-radius: 0px 10px 10px 0px;
+}
+
+#nickChange button:hover {
+	background-color: #566160;
+}
+#chatting {
+	width: 400px;
+	height: 600px;
+	background-color: #62D7C3;
+	border-radius: 10px;
+	margin: 10px 0;
+	padding: 15px 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: stretch;
+	margin: 0 5px;
+}
+
+#chatting .roomName {
+	font-size: 20px;
+	font-weight: 600;
+	flex-basis: 10px;
+}
+
+#chatting ul {
+	height: 200px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex-basis: 600px;
+}
+
+#chatting form {
+	background-color: #59c6b4;
+	padding: 5px;
+	border-radius: 5px;
+	flex-basis: 10px;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+#chatting form input {
+	height: 90%;
+	border-radius: 15px;
+	border: 3px solid #1e826d;
+	width: 70%;
+	padding: 0 15px;
+}
+
+#chatting form button {
+	background-color: #2e7a6d;
+	color: white;
+	font-weight: 600;
+}
+
+#chatting form button:hover {
+	background-color: #143b34;
+}
+
+#chatting .noti {
+	margin: 15px;
+	color: #D03C41;
+	font-weight: 600;
+}
+
+#chatting .message {
+	padding: 15px;
+	margin: 5px;
+	color: white;
+	border-radius: 15px;
+	font-weight: 600;
+}
+
+#chatting .your_message_block {
+	align-self: start;
+}
+
+#chatting .your_nick {
+	padding: 0 5px;
+}
+
+#chatting .your_message {
+	background-color: #2D8B44;
+}
+
+#chatting .me_message {
+	background-color: #3f6047;
+	align-self: end;
+}
+
+.emphasize {
+	color: rgb(126, 33, 33) !important;
+	animation: vibration 0.1s infinite;
+}
+
+@keyframes vibration {
+	from {
+		transform: translate(10px, 0px);
+	}
+	to {
+		transform: translate(-10px 0px);
+	}
+}

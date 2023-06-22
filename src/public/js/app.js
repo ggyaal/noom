@@ -1,47 +1,163 @@
-const messageList = document.querySelector("ul");
-const nickForm = document.querySelector("#nickname");
-const messageForm = document.querySelector("#message");
-const socket = new WebSocket(`ws://${window.location.host}`);
+const socket = io();
+const nick = document.getElementById("nick");
+const message = document.getElementById("message");
+const chatting = document.getElementById("chatting");
+const roomList = document.getElementById("roomList");
+const createRoom = document.getElementById("createRoom");
+const reflashRoom = document.getElementById("reflashRoom");
+const roomNameDiv = document.querySelector(".roomName");
 
-function makeJsonData(type, payload) {
-	return JSON.stringify({type, payload});
+chatting.style.display = "none";
+message.style.display = "none";
+roomList.style.display = "none";
+
+function alert_welcome(msg) {
+	const div = document.getElementById("welcome");
+	const preText = div.innerText;
+	div.innerText = msg;
+	div.classList.add("emphasize");
+	setTimeout(() => {
+		div.classList.remove("emphasize");
+		setTimeout(() => {
+			div.innerText = preText;
+		}, 800);
+	}, 500);
 }
 
-function nickHandler(event) {
-	event.preventDefault();
-	const input = nickForm.querySelector("input");
-	socket.send(makeJsonData("nickname", input.value));
-	input.value = "";
+function msg_scrolling() {
+	const ul = chatting.querySelector("ul");
+	ul.scrollTop = ul.scrollHeight;
 }
 
-function messageHandler(event) {
-	event.preventDefault();
-	const input = messageForm.querySelector("input");
-	socket.send(makeJsonData("message", input.value));
-	input.value = "";
+function enterRoomHandler(roomName) {
+	const ul = chatting.querySelector("ul");
+	ul.innerHTML = "";
+	roomNameDiv.innerText = `Room <${roomName}>`;
+	chatting.style.display = "";
+	message.style.display = "";
+	socket["room"] = roomName;
+	reflashRoomList();
 }
 
-socket.addEventListener("open", () => {
+function reflashRoomList() {
+	socket.emit("roomList", (rooms) => {
+		const ul = roomList.querySelector("ul");
+		ul.innerHTML = "";
+		rooms.forEach((room) => {
+			const li = document.createElement("li");
+			li.className = "roomLink";
+			li.innerText = room;
+			ul.append(li);
+			msg_scrolling();
+		});
+	const roomLinks = document.querySelectorAll(".roomLink");
+	roomLinks.forEach(roomLink => {
+		if (roomLink.innerText !== socket.room)
+		{
+			roomLink.classList.add("linking");
+			roomLink.addEventListener("click", (event) => {
+				event.preventDefault();
+				socket.emit("enter_room", roomLink.innerText, enterRoomHandler);
+			});
+		}
+	});
+  });
+}
+
+socket.on("welcome", nick => {
+	const ul = chatting.querySelector("ul");
 	const li = document.createElement("li");
-	li.className = "notification";
-	li.innerText = "Connected on Server 🚀";
-	messageList.append(li);
+	li.className = "noti";
+	li.innerText = `Welcome to this room ${nick} !`;
+	ul.append(li);
+	msg_scrolling();
 });
 
-socket.addEventListener("message", (message) => {
-	const msg = JSON.parse(message.data);
+socket.on("leave_user", nick => {
+	const ul = chatting.querySelector("ul");
 	const li = document.createElement("li");
-	li.className = msg.type;
-	li.innerText = msg.payload;
-	messageList.append(li);
-})
-
-socket.addEventListener("close", () => {
-	const li = document.createElement("li");
-	li.className = "notification";
-	li.innerText = "Disconnected on Server 🚧";
-	messageList.append(li);
+	li.className = "noti";
+	li.innerText = `${nick} leave this room.`;
+	ul.append(li);
+	msg_scrolling();
 });
 
-nickForm.addEventListener("submit", nickHandler);
-messageForm.addEventListener("submit", messageHandler);
+socket.on("message", (nick, message) => {
+	const ul = chatting.querySelector("ul");
+	const li = document.createElement("li");
+	const name = document.createElement("div");
+	const msg = document.createElement("div");
+	name.className = "your_nick";
+	name.innerText = nick;
+	msg.className = "message your_message";
+	msg.innerText = message;
+	li.className = "your_message_block"
+	li.append(name, msg);
+	ul.append(li);
+	msg_scrolling();
+});
+
+socket.on("change_nick", (old_nick, new_nick) => {
+	const ul = chatting.querySelector("ul");
+	const li = document.createElement("li");
+	li.className = "noti";
+	li.innerText = `change nickname [ ${old_nick} => ${new_nick} ]`;
+	ul.append(li);
+	msg_scrolling();
+});
+
+socket.on("reflashRoomList", reflashRoomList);
+
+nick.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = nick.querySelector("input");
+  socket.emit("set_nick", input.value, (isDone, nickName) => {
+    const div = document.getElementById("welcome");
+	if (isDone)
+	{
+		div.innerText = `hi, ${nickName}!`;
+		nick.style.display = "none";
+		roomList.style.display = "";
+		const nickChange = document.getElementById("nickChange");
+		nickChange.addEventListener("submit", event => {
+			event.preventDefault();
+			const input = event.target.querySelector("input");
+			socket.emit("change_nick", input.value, (idDone, nickName) => {
+				const div = document.getElementById("welcome");
+				if (idDone)
+				{
+					div.innerText = `hi, ${nickName}!`;
+					input.value = "";
+				}
+				else
+					alert_welcome("nickname is duplicated ❌");
+			})
+		})
+		reflashRoomList();
+	}
+	else
+		alert_welcome("nickname is duplicated ❌");
+  });
+  input.value = "";
+});
+
+createRoom.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = createRoom.querySelector("input");
+  socket.emit("enter_room", input.value, enterRoomHandler);
+  input.value = "";
+});
+
+message.addEventListener("submit", (event) => {
+	event.preventDefault();
+	const input = message.querySelector("input");
+	socket.emit("message", input.value, (message) => {
+		const ul = chatting.querySelector("ul");
+		const li = document.createElement("li");
+		li.className = "message me_message";
+		li.innerText = message;
+		ul.append(li);
+		msg_scrolling();
+	});
+	input.value = "";
+});

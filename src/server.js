@@ -1,53 +1,122 @@
 import http from "http";
 import express from "express";
-import WebSocket from "ws";
+import socketIO from "socket.io";
 
 const app = express();
 const port = 3000;
-
-let socketList = [];
 
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
 
-app.get("/", (req, res) => res.render("home"));
-app.get("/*", (req, res) => res.redirect("/"));
-
-const handlelisten = () => console.log(`Listing on http://localhost:${port}`);
+app.get("/", (_, res) => res.render("home"));
+app.get("/*", (_, res) => res.redirect("/"));
 
 const server = http.createServer(app);
+const wsServer = socketIO(server);
 
-const wss = new WebSocket.Server({ server });
-
-server.listen(3000, handlelisten);
-
-function jsonToString(type, payload) {
-	return JSON.stringify({ type, payload });
+function get_roomList() {
+	const { rooms, sids } = wsServer.sockets.adapter;
+	const roomList = [];
+	rooms.forEach((_, roomName) => {
+		if (sids.get(roomName) === undefined)
+			roomList.push(roomName);
+	});
+	return roomList;
 }
 
-wss.on("connection", (socket) => {
-	socketList.push(socket);
-	socket["nickname"] = "Anonymous";
-	console.log("Connected to browser ✅");
-	socket.on("message", (message) => {
-		const msg = JSON.parse(message);
-		switch (msg.type)
+function autoReflashRoomList(type, socket, roomName) {
+	if (type === "join")
+	{
+		const roomList = get_roomList();
+		if (roomList.filter(room => room === roomName).length === 0)
 		{
-			case "message":
-				socketList.forEach(soc =>
-					soc.send(jsonToString("message", `${socket.nickname}: ${msg.payload}`))
-				);
-				break;
-			case "nickname":
-				socketList.forEach(soc =>
-					soc.send(jsonToString("notification", `"${socket.nickname}" change nickname to ${msg.payload}`))
-				);
-				socket["nickname"] = msg.payload;
-				break;
+			socket.join(roomName);
+			socket.broadcast.emit("reflashRoomList");
+		}
+		else
+			socket.join(roomName);
+	}
+	else if (type === "leave")
+	{
+		const { rooms } = wsServer.sockets.adapter;
+		socket.leave(roomName);
+		if (rooms.get(roomName) === undefined)
+			socket.broadcast.emit("reflashRoomList");
+	}
+}
+
+function exit_allRoom(socket) {
+	socket.rooms.forEach(room => {
+		if (socket.id !== room)
+		{
+			socket.to(room).emit("leave_user", socket.nick);
+			autoReflashRoomList("leave", socket, room);
 		}
 	});
-	socket.on("close", (event) => {
-		console.log(`Disconnected to browser ${event}`);
+}
+
+function am_i_in_room(socket) {
+	for (var room of socket.rooms) {
+		if (socket.id !== room)
+			return room;
+	}
+	return undefined;
+}
+
+function valid_nickname(nickName) {
+	const ws_sockets = wsServer.sockets.adapter.nsp.sockets;
+	for (var ws_socket of ws_sockets.values()) {
+		if (ws_socket.nick === nickName)
+			return false;
+	}
+	return true;
+}
+
+wsServer.on("connection", (socket) => {
+	socket.on("set_nick", (nick, done) => {
+		let isDone = valid_nickname(nick);
+		if (isDone)
+			socket["nick"] = nick;
+		done(isDone, nick);
 	});
-});
+	socket.on("change_nick", (nick, done) => {
+		let isDone = valid_nickname(nick);
+		if (isDone)
+		{
+			socket["nick"] = nick;
+			socket.to(am_i_in_room(socket)).emit("change_nick", socket.nick, nick);
+		}
+		done(isDone, nick);
+	})
+	socket.on("disconnecting", () => {
+		const roomName = am_i_in_room(socket);
+		if (roomName !== undefined)
+			socket.to(roomName).emit("leave_user", socket.nick);
+	});
+	socket.on("disconnect", () => {
+		socket.broadcast.emit("reflashRoomList");
+	});
+	socket.on("enter_room", (room, done) => {
+		if (am_i_in_room(socket) !== room)
+		{
+			exit_allRoom(socket);
+			autoReflashRoomList("join", socket, room);
+			socket.to(room).emit("welcome", socket.nick);
+			done(room);
+		}
+	});
+	socket.on("roomList", (done) => {
+		const roomList = get_roomList();
+		done(roomList);
+	});
+	socket.on("message", (message, done) => {
+		const roomName = am_i_in_room(socket);
+		if (roomName !== undefined)
+			socket.to(roomName).emit("message", socket.nick, message);
+		done(message);
+	});
+  });
+
+const handlelisten = () => console.log(`Listing on http://localhost:${port}`);
+server.listen(3000, handlelisten);
