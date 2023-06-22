@@ -13,7 +13,6 @@ roomList.style.display = "none";
 function alert_welcome(msg, form) {
 	const div = document.getElementById("welcome");
 	const btn = form.querySelector("button");
-	const preText = div.innerText;
 	console.log(btn);
 	btn.disabled = true;
 	div.innerText = msg;
@@ -21,7 +20,9 @@ function alert_welcome(msg, form) {
 	setTimeout(() => {
 		div.classList.remove("emphasize");
 		setTimeout(() => {
-			div.innerText = preText;
+			socket.emit("get_nick", (nick) => {
+				div.innerText = `hi, ${nick}!`;
+			});
 			btn.disabled = false;
 		}, 800);
 	}, 500);

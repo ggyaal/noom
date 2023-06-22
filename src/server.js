@@ -80,6 +80,9 @@ wsServer.on("connection", (socket) => {
 			socket["nick"] = nick;
 		done(isDone, nick);
 	});
+	socket.on("get_nick", (done) => {
+		done(socket.nick);
+	});
 	socket.on("change_nick", (nick, done) => {
 		let isDone = valid_nickname(nick);
 		if (isDone)
