@@ -8,18 +8,21 @@ const reflashRoom = document.getElementById("reflashRoom");
 const roomNameDiv = document.querySelector(".roomName");
 
 chatting.style.display = "none";
-message.style.display = "none";
 roomList.style.display = "none";
 
-function alert_welcome(msg) {
+function alert_welcome(msg, form) {
 	const div = document.getElementById("welcome");
+	const btn = form.querySelector("button");
 	const preText = div.innerText;
+	console.log(btn);
+	btn.disabled = true;
 	div.innerText = msg;
 	div.classList.add("emphasize");
 	setTimeout(() => {
 		div.classList.remove("emphasize");
 		setTimeout(() => {
 			div.innerText = preText;
+			btn.disabled = false;
 		}, 800);
 	}, 500);
 }
@@ -36,6 +39,14 @@ function enterRoomHandler(roomName) {
 	chatting.style.display = "";
 	message.style.display = "";
 	socket["room"] = roomName;
+	const leaveBtn = document.getElementById("reaveBtn");
+	leaveBtn.addEventListener("click", (event) => {
+		event.preventDefault();
+		socket.emit("leave_room", () => {
+			chatting.style.display = "none";
+			reflashRoomList();
+		});
+	});
 	reflashRoomList();
 }
 
@@ -130,15 +141,15 @@ nick.addEventListener("submit", (event) => {
 					input.value = "";
 				}
 				else
-					alert_welcome("nickname is duplicated ❌");
+					alert_welcome("nickname is duplicated ❌", event.target);
 			})
 		})
 		reflashRoomList();
+		input.value = "";
 	}
 	else
-		alert_welcome("nickname is duplicated ❌");
+		alert_welcome("nickname is duplicated ❌", event.target);
   });
-  input.value = "";
 });
 
 createRoom.addEventListener("submit", (event) => {

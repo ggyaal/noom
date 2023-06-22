@@ -27,6 +27,7 @@ ul {
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
+	overflow: auto;
 }
 
 header h1 {
@@ -51,7 +52,7 @@ header h1 {
 	border: 2px solid;
 	border-radius: 5px;
 	margin: 10px 0;
-	min-width: 250px;
+	min-width: 300px;
 }
 
 #nick h5 {
@@ -161,6 +162,31 @@ header h1 {
 #nickChange button:hover {
 	background-color: #566160;
 }
+
+#chatting-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	white-space: nowrap;
+	width: 100%;
+	margin-bottom: 5px;
+	border-bottom: 1px solid #3fa493;
+	padding-bottom: 10px;
+	flex-basis: 10px;
+}
+
+#chatting-header div {
+	flex-basis: auto;
+	overflow-x: auto;
+}
+
+#chatting-header button {
+	margin-left: 10px;
+	background-color: #811b1b;
+	color: #dadada;
+	font-size: 15px;
+}
+
 #chatting {
 	width: 400px;
 	height: 600px;
@@ -178,7 +204,6 @@ header h1 {
 #chatting .roomName {
 	font-size: 20px;
 	font-weight: 600;
-	flex-basis: 10px;
 }
 
 #chatting ul {
@@ -249,8 +274,18 @@ header h1 {
 	align-self: end;
 }
 
+.nickFormBtn[disabled] {
+	background-color: #692f2f !important;
+	color: #8e8e8e !important;
+}
+
+.nickFormBtn[disabled]:hover {
+	background-color: #692f2f !important;
+	color: #8e8e8e in !important;
+}
+
 .emphasize {
-	color: rgb(126, 33, 33) !important;
+	color: #7e2121 !important;
 	animation: vibration 0.1s infinite;
 }
 

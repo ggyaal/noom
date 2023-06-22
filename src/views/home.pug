@@ -24,9 +24,11 @@ html(lang="en")
 							h5 Change your nickname !
 							div
 								input(type="text", placeholder="change to nickname")
-								button Change
+								button.nickFormBtn Change
 					div#chatting
-						div.roomName
+						div#chatting-header
+							div.roomName
+							button#reaveBtn Leave Room
 						ul
 						form#message
 							input(type="text", placeholder="send to message")
@@ -34,6 +36,6 @@ html(lang="en")
 				form#nick
 					h5 What's your nickname ?
 					input(type="text", placeholder="choose to nickname")
-					button Save
+					button.nickFormBtn Save
 		script(src="/socket.io/socket.io.js")
 		script(src="/public/js/app.js")

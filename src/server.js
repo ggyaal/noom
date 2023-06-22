@@ -106,6 +106,14 @@ wsServer.on("connection", (socket) => {
 			done(room);
 		}
 	});
+	socket.on("leave_room", (done) => {
+		const room = am_i_in_room(socket);
+		if (room !== undefined)
+		{
+			exit_allRoom(socket);
+			done();
+		}
+	});
 	socket.on("roomList", (done) => {
 		const roomList = get_roomList();
 		done(roomList);
