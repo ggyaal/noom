@@ -84,13 +84,14 @@ wsServer.on("connection", (socket) => {
 		done(socket.nick);
 	});
 	socket.on("change_nick", (nick, done) => {
+		const old_nick = socket.nick;
 		let isDone = valid_nickname(nick);
 		if (isDone)
 		{
 			socket["nick"] = nick;
-			socket.to(am_i_in_room(socket)).emit("change_nick", socket.nick, nick);
+			socket.to(am_i_in_room(socket)).emit("change_nick", old_nick, nick);
 		}
-		done(isDone, nick);
+		done(isDone, old_nick, nick);
 	})
 	socket.on("disconnecting", () => {
 		const roomName = am_i_in_room(socket);

@@ -45,6 +45,7 @@ function enterRoomHandler(roomName) {
 		event.preventDefault();
 		socket.emit("leave_room", () => {
 			chatting.style.display = "none";
+			socket.room = undefined;
 			reflashRoomList();
 		});
 	});
@@ -134,11 +135,16 @@ nick.addEventListener("submit", (event) => {
 		nickChange.addEventListener("submit", event => {
 			event.preventDefault();
 			const input = event.target.querySelector("input");
-			socket.emit("change_nick", input.value, (idDone, nickName) => {
-				const div = document.getElementById("welcome");
+			socket.emit("change_nick", input.value, (idDone, old_nick, new_nick) => {
 				if (idDone)
 				{
-					div.innerText = `hi, ${nickName}!`;
+					const ul = chatting.querySelector("ul");
+					const li = document.createElement("li");
+					li.className = "noti";
+					li.innerText = `change nickname [ ${old_nick} => ${new_nick} ]`;
+					ul.append(li);
+					msg_scrolling();
+					div.innerText = `hi, ${new_nick}!`;
 					input.value = "";
 				}
 				else
