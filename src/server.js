@@ -25,6 +25,12 @@ function get_roomList() {
 	return roomList;
 }
 
+function how_many_inroom(roomName) {
+	const { rooms } = wsServer.sockets.adapter;
+	const peopleList = rooms.get(roomName);
+	return peopleList.size;
+}
+
 function autoReflashRoomList(type, socket, roomName) {
 	if (type === "join")
 	{
@@ -35,7 +41,12 @@ function autoReflashRoomList(type, socket, roomName) {
 			socket.broadcast.emit("reflashRoomList");
 		}
 		else
-			socket.join(roomName);
+		{
+			if (how_many_inroom(roomName) < 2)
+				socket.join(roomName);
+			else
+				return false;
+		}
 	}
 	else if (type === "leave")
 	{
@@ -44,6 +55,7 @@ function autoReflashRoomList(type, socket, roomName) {
 		if (rooms.get(roomName) === undefined)
 			socket.broadcast.emit("reflashRoomList");
 	}
+	return true;
 }
 
 function exit_allRoom(socket) {
@@ -105,9 +117,10 @@ wsServer.on("connection", (socket) => {
 		if (am_i_in_room(socket) !== room)
 		{
 			exit_allRoom(socket);
-			autoReflashRoomList("join", socket, room);
-			socket.to(room).emit("welcome", socket.nick);
-			done(room);
+			const status = autoReflashRoomList("join", socket, room);
+			if (status)
+				socket.to(room).emit("welcome", socket.nick);
+			done(room, status);
 		}
 	});
 	socket.on("leave_room", (done) => {
@@ -127,6 +140,21 @@ wsServer.on("connection", (socket) => {
 		if (roomName !== undefined)
 			socket.to(roomName).emit("message", socket.nick, message);
 		done(message);
+	});
+	socket.on("offer", offer => {
+		const currRoom = am_i_in_room(socket);
+		if (currRoom !== undefined)
+			socket.to(currRoom).emit("offer", offer);
+	});
+	socket.on("answer", answer => {
+		const currRoom = am_i_in_room(socket);
+		if (currRoom !== undefined)
+			socket.to(currRoom).emit("answer", answer);
+	});
+	socket.on("ice", ice => {
+		const currRoom = am_i_in_room(socket);
+		if (currRoom !== undefined)
+			socket.to(currRoom).emit("ice", ice);
 	});
   });
 

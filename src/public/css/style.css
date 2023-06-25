@@ -55,6 +55,13 @@ header h1 {
 	min-width: 300px;
 }
 
+#nick {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
 #nick h5 {
 	color: white;
 	margin-top: 30px;
@@ -73,9 +80,11 @@ header h1 {
 
 #chat-main {
 	display: flex;
+	justify-content: center;
 }
 
 #roomList {
+	width: 200px;
 	background-color: #62D7C3;
 	border-radius: 10px;
 	margin: 10px 0;
@@ -116,7 +125,8 @@ header h1 {
 }
 
 #createRoom input {
-	height: 80%;
+	width: 50%;
+	height: 60%;
 	border-radius: 10px;
 	border: 3px solid #1e826d;
 }
@@ -132,16 +142,17 @@ header h1 {
 }
 
 #nickChange {
+  width: 90%;
 	margin-top: 20px;
 	background-color: #406a63;
-	padding: 20px;
+	padding: 10px;
 	border-radius: 5px;
 	color: white;
 }
 
 #nickChange h5 {
 	margin: 5px 0;
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 600;
 }
 
@@ -150,18 +161,132 @@ header h1 {
 }
 
 #nickChange input {
+  width: 90%;
 	padding: 0 10px;
 	border: none;
 	border-radius: 10px 0px 0px 10px;
 }
 
 #nickChange button {
+  width: 50%;
 	border-radius: 0px 10px 10px 0px;
 }
 
 #nickChange button:hover {
 	background-color: #566160;
 }
+
+#video-main {
+	color: #4d656e;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	font-size: 25px;
+	width: 600px;
+	padding: 10px 0;
+	border: 2px solid;
+	border-radius: 5px;
+	margin: 10px 0;
+	min-width: 300px;
+}
+
+#video {
+	color: #4d656e;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	font-size: 25px;
+	width: 550px;
+	height: 400px;
+	padding: 10px;
+	border: 2px solid;
+	border-radius: 5px;
+	margin: 10px 0;
+	min-width: 300px;
+}
+
+#video-info {
+	display: flex;
+	width: 90%;
+	height: 30px;
+}
+
+#video-info .select-devices {
+	width: 40%;
+	padding: 3px;
+	border-radius: 10px;
+}
+
+#video-info #mute {
+	margin-right: 10px;
+	font-size: 15px;
+}
+
+#video-info #mute.actived {
+	background-color: #811b1b !important;
+	color: #dadada;
+}
+
+#video-info #video-on {
+	margin: 0 10px;
+	font-size: 5px;
+	padding: 5px;
+}
+
+#video-info #video-on.actived {
+	background-color: #41bb15 !important;
+	color: #dadada;
+}
+
+#videoList {
+	color: #4d656e;
+	display: flex;
+	align-items: center;
+	font-size: 25px;
+	width: 550px;
+	height: 200px;
+	padding: 10px;
+	border: 2px solid;
+	border-radius: 5px;
+	margin: 10px 0;
+	min-width: 300px;
+}
+
+#videoList #letter {
+	border: 2px solid;
+	border-radius: 10px;
+	width: 80%;
+	height: 80%;
+	margin: 5px;
+	padding: 5px;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+  }
+
+  #videoList #letter #pannel {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	overflow-x: auto;
+	width: 90%;
+	padding: 5px;
+  }
+
+  #videoList #letter #pannel li {
+	margin: 5px;
+	  cursor: pointer;
+  }
+
+  #videoList #letter div {
+	font-size: 90px;
+	border-radius: 5px;
+	margin: 5px 0;
+	padding: 5px;
+  }
 
 #chatting-header {
 	display: flex;
@@ -188,8 +313,8 @@ header h1 {
 }
 
 #chatting {
-	width: 400px;
-	height: 600px;
+	width: 300px;
+	height: 700px;
 	background-color: #62D7C3;
 	border-radius: 10px;
 	margin: 10px 0;
@@ -207,7 +332,6 @@ header h1 {
 }
 
 #chatting ul {
-	height: 200px;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
